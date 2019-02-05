@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.misc import imread
+import pandas
 
 a_x = 1
 a_y = 1
@@ -20,6 +21,10 @@ def displayTransitionsExpl(dictrow, name):
     image = "interface.png"
     displayTransitions(dictrow, image, name)
 
+def displayTransitionsBase(dictrow, name):
+    image = "baseline.png"
+    displayTransitions(dictrow, image, name)
+
 def set_size(w,h, ax=None):
     """ w, h: width, height in inches """
     if not ax: ax=plt.gca()
@@ -32,7 +37,7 @@ def set_size(w,h, ax=None):
     ax.figure.set_size_inches(figw, figh)
 
 def get_color(value):
-    cmap = plt.cm.get_cmap('YlGnBu')
+    cmap = plt.cm.get_cmap('gist_heat')
     rgba = cmap(value/17.0)
     return rgba
 
@@ -71,3 +76,14 @@ def displayTransitions(dictRow, image, name):
     fig.add_axes(ax)
     fig.savefig(name, bbox_inches='tight', pad_inches=0)
     plt.show()
+
+df = pandas.read_csv('./mycsvfile.csv')
+baseData = df[df['expl'] == False]
+explData = df[df['expl'] == True]
+sumBase = baseData.iloc[:, 10:].sum()
+sumExpl = explData.iloc[:, 10:].sum()
+
+print(sumBase)
+print(sumExpl)
+
+

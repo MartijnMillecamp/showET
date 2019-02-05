@@ -19,7 +19,7 @@ lowMS = [2,5,7,8,10,11,12,13,14,16,19,20,21,23,29,30]
 highMS = [1,3,4,6,9,15,17,18,22,24,25,26,27,28]
 
 lowLoc = [2,4,5,9,11,12,15,16,17,18,19,21,22,26,30]
-highLoc = [1,3,6,7,8,10,13,14,20,23,24,25,27,28,29] #hoge interne locus of control;
+highLoc = [1,3,6,7,8,10,13,14,20,23,24,25,27,28,29] #hoge score = interne locus of control;
 
 lowVWM = [2,3,4,5,6,7,8,9,10,12,13,14,15,17,20,22,23,24,25,26,27,28,30]
 highVWM = [1,11,16,18,19,21,29]
@@ -62,7 +62,7 @@ def createHeatmapData(content):
 
 def createTransitionsData(content):
     '''
-    Calculate the different transitions
+    Calculate the different transitionsExpl
     :param content:
     :return:
     '''
@@ -112,16 +112,14 @@ def addDictionaries(dict1, dict2):
 def mainVisualise(list, name):
     with open('mycsvfile.csv', 'w') as f:
         # list all files
-        mypath = './analysis'
+        mypath = '../analysis'
         participants = {}
         index = 0
-        nbA = 0
-        nbR = 0
-        nbW = 0
-        nbD = 0
-        nbS = 0
-        nbE = 0
-        totalDict = {}
+        nbA, nbR, nbW, nbD, nbS, nbE = 0, 0, 0, 0, 0, 0
+        nbAB, nbRB, nbDB, nbSB = 0, 0, 0, 0
+        totalDictBase = {}
+        totalDictExpl = {}
+
         for file in listdir(mypath):
             dict = parseFile(mypath + "/" + file)
             [participant, expl, participants, index] = parseFileName(file, participants, index)
@@ -133,6 +131,14 @@ def mainVisualise(list, name):
             # write to csv
             w.writerow(dictRow)
 
+            if not dictRow['expl']  and dictRow['p'] in list:
+                # add percentages
+                nbAB += dict['a'] / 100.0
+                nbRB += dict['r'] / 100.0
+                nbDB += dict['d'] / 100.0
+                nbSB += dict['s'] / 100.0
+                totalDictBase = addDictionaries(totalDictBase, dictRow)
+
             if dictRow['expl']  and dictRow['p'] in list:
                 # add percentages
                 nbA += dict['a'] / 100.0
@@ -141,15 +147,21 @@ def mainVisualise(list, name):
                 nbD += dict['d'] / 100.0
                 nbS += dict['s'] / 100.0
                 nbE += dict['e'] / 100.0
-                totalDict = addDictionaries(totalDict, dictRow)
+                totalDictExpl = addDictionaries(totalDictExpl, dictRow)
 
         nbInList = len(list)
         # normalise numbers and generate heatmap of average percentage of time user spent in AOI
-        matrix = heatmap.generateMatrixExpl(nbA/nbInList, 0, nbW/nbInList, nbD/nbInList, nbS/nbInList, nbE/nbInList)
-        heatmap.createHeatmapExpl(matrix, 'heatmap/'+ name + '.png')
+        # heatmap.createHeatmapExpl(nbA/nbInList, 0, nbW/nbInList, nbD/nbInList, nbS/nbInList, nbE/nbInList,
+        #                           'heatmapExpl/'+ name + '.png')
+        # heatmap.createHeatmapBase(nbAB/nbInList, nbR/nbInList, 0, nbDB/nbInList, nbSB/nbInList, 0,
+        #                           'heatmapBase/'+ name + '.png')
+
         # average (absolute) number of transistions between AOI
-        normalisedDict = {k: round(v / nbInList) for k, v in totalDict.items()}
-        # transitions.displayTransitionsExpl(normalisedDict, 'transitions/'+ name + '.png')
+        # normalisedDict = {k: round(v / nbInList) for k, v in totalDictExpl.items()}
+        # transitions.displayTransitionsExpl(normalisedDict, 'transitionsExpl/'+ name + '.png')
+        # normalisedDictB = {k: round(v / nbInList) for k, v in totalDictBase.items()}
+        # transitions.displayTransitionsBase(normalisedDictB, 'transitionsBase/' + name + '.png')
+
 
 
 if __name__ == '__main__':

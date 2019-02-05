@@ -1,2 +1,8 @@
 
 \.DS_Store
+
+\.idea/libraries/
+
+\.idea/
+
+__pycache__/

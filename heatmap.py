@@ -22,13 +22,25 @@ def generateMatrixExpl(nbA, nbR, nbW, nbD, nbS, nbE):
     matrix[4] = np.array([nbS, nbS, nbR, nbR, nbR, nbR, 0, 0, 0, 0, nbD, nbD])
     return matrix
 
-def createHeatmapExpl(matrix, name):
+def generateMatrixBase(nbA, nbR, nbD, nbS):
+    matrix = np.random.random((5, 12))
+    matrix[0] = np.array([nbA, nbA, nbR, nbR, nbR, nbR, 0, 0, 0, 0, nbD, nbD])
+    matrix[1] = np.array([nbA, nbA, nbR, nbR, nbR, nbR, 0, 0, 0, 0, nbD, nbD])
+    matrix[2] = np.array([nbS, nbS, nbR, nbR, nbR, nbR, 0, 0, 0, 0, nbD, nbD])
+    matrix[3] = np.array([nbS, nbS, nbR, nbR, nbR, nbR, 0, 0, 0, 0, nbD, nbD])
+    matrix[4] = np.array([nbS, nbS, nbR, nbR, nbR, nbR, 0, 0, 0, 0, nbD, nbD])
+    return matrix
+
+def createHeatmapExpl(nbA, nbR, nbW, nbD, nbS, nbE, name):
+    matrix = generateMatrixExpl(nbA, nbR, nbW, nbD, nbS, nbE)
     img = 'interface.png'
     createHeatmap(matrix, img, name)
 
-def createHeatmapBase(matrix, name):
+def createHeatmapBase(nbA, nbR, nbW, nbD, nbS, nbE, name):
+    matrix = generateMatrixBase(nbA, nbR,  nbD, nbS)
     img = 'baseline.png'
     createHeatmap(matrix, img, name)
+
 
 def createHeatmap(matrix, image, name):
     # alternative cmaps:
@@ -38,7 +50,7 @@ def createHeatmap(matrix, image, name):
     img = imread(image)
     ax = fig.add_subplot(1, 1, 1)
     ax.imshow(img, aspect='auto', extent=(0, 11, 0, 4), alpha=0.5, origin='lower', zorder=-1)
-    ax.imshow(matrix, cmap='viridis', alpha=0.6, interpolation='bilinear', origin='lower', zorder=1)
+    ax.imshow(matrix, cmap='jet', alpha=0.6, interpolation='bilinear', origin='lower', zorder=1)
     ax.set_axis_off()
     ax.get_xaxis().set_visible(False)
     ax.axes.get_yaxis().set_visible(False)
@@ -50,7 +62,7 @@ def createHeatmap(matrix, image, name):
 
     fig.savefig(name, bbox_inches='tight', pad_inches=0)
 
-    plt.show()
+    # plt.show()
 
 
 
